@@ -25,9 +25,35 @@ GROUP BY prescription.npi,
 	specialty_description
 ORDER BY number_of_claims DESC;
 
+-- Michael Cox in Internal Medicine: 379 claims
+
 -- 2a. Which specialty had the most total number of claims (totaled over all drugs)?
 
+SELECT
+	specialty_description,
+	(COUNT(total_claim_count)) AS number_of_claims
+FROM prescriber
+	LEFT JOIN prescription
+	USING (npi)
+GROUP BY specialty_description
+ORDER BY number_of_claims DESC;
+
+-- Nurse Practitioner: 164,609 claims
+
 -- 2b. Which specialty had the most total number of claims for opioids?
+
+SELECT
+	specialty_description,
+	(COUNT(total_claim_count)) AS number_of_claims
+WHERE opioid_drug_flag = 'Y'
+FROM prescriber
+	LEFT JOIN prescription
+	USING (npi)
+	LEFT JOIN drug
+	ON prescription.drug_name = drug.drug_name
+	specialty_description,
+GROUP BY specialty_description
+ORDER BY number_of_claims DESC;
 
 -- 2c. Challenge Question: Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
 
