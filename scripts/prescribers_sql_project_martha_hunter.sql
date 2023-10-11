@@ -62,6 +62,17 @@ ORDER BY number_of_claims DESC;
 
 -- 3a. Which drug (generic_name) had the highest total drug cost?
 
+SELECT
+	generic_name,
+	total_drug_cost
+FROM drug
+	LEFT JOIN prescription
+	USING (drug_name)
+WHERE total_drug_cost IS NOT NULL
+GROUP BY generic_name, total_drug_cost
+ORDER BY total_drug_cost DESC;
+
+-- PIRFENIDONE
 
 -- 3b. Which drug (generic_name) has the hightest total cost per day? Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.
 
