@@ -45,23 +45,23 @@ ORDER BY number_of_claims DESC;
 SELECT
 	specialty_description,
 	(COUNT(total_claim_count)) AS number_of_claims
-WHERE opioid_drug_flag = 'Y'
-FROM prescriber
+FROM drug
 	LEFT JOIN prescription
+	ON drug.drug_name = prescription.drug_name  
+	LEFT JOIN prescriber
 	USING (npi)
-	LEFT JOIN drug
-	ON prescription.drug_name = drug.drug_name
-	specialty_description,
+WHERE opioid_drug_flag = 'Y'
 GROUP BY specialty_description
 ORDER BY number_of_claims DESC;
+
+-- Nurse Practitioner with 9,551 claims with opioid drug flags
 
 -- 2c. Challenge Question: Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
 
 -- 2d. Difficult Bonus: Do not attempt until you have solved all other problems! For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 
-
-
 -- 3a. Which drug (generic_name) had the highest total drug cost?
+
 
 -- 3b. Which drug (generic_name) has the hightest total cost per day? Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.
 
