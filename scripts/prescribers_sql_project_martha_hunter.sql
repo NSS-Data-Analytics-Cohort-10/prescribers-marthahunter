@@ -66,19 +66,28 @@ ORDER BY total_claim_count DESC;
 
 SELECT
 	generic_name,
-	total_drug_cost
-FROM drug
-	LEFT JOIN prescription
+	SUM(total_drug_cost) AS total_drug_cost
+FROM prescription
+	LEFT JOIN drug
 	USING (drug_name)
 WHERE total_drug_cost IS NOT NULL
-GROUP BY generic_name, total_drug_cost
+GROUP BY generic_name
 ORDER BY total_drug_cost DESC;
 
--- PIRFENIDONE
+-- INSULIN GLARGINE,HUM.REC.ANLOG: 104264066.35
 
 -- 3b. Which drug (generic_name) has the hightest total cost per day? Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.
 
-
+--maybe use this and do some math with total_day_supply?
+SELECT
+	generic_name,
+	SUM(total_drug_cost) AS total_drug_cost
+FROM prescription
+	LEFT JOIN drug
+	USING (drug_name)
+WHERE total_drug_cost IS NOT NULL
+GROUP BY generic_name
+ORDER BY total_drug_cost DESC;
 
 -- 4a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
