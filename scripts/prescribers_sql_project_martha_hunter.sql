@@ -8,6 +8,7 @@ GROUP BY npi
 ORDER BY number_of_claims DESC;
 
 -- Provider 1356305197: 379 claims
+-- NOT CORRECT
 
 -- 1b. Repeat the above, but this time report the nppes_provider_first_name, nppes_provider_last_org_name, specialty_description, and the total number of claims.
 
@@ -26,6 +27,7 @@ GROUP BY prescription.npi,
 ORDER BY number_of_claims DESC;
 
 -- Michael Cox in Internal Medicine: 379 claims
+-- NOT CORRECT
 
 -- 2a. Which specialty had the most total number of claims (totaled over all drugs)?
 
