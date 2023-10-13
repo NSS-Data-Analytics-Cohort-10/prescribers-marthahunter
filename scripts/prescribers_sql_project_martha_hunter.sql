@@ -1,14 +1,14 @@
 -- 1a. Which prescriber had the highest total number of claims (totaled over all drugs)? Report the npi and the total number of claims.
 
 SELECT
-	npi,
-	(COUNT(total_claim_count)) AS number_of_claims
-FROM prescription
-GROUP BY npi
-ORDER BY number_of_claims DESC;
+	prescription.npi, sum(total_claim_count) AS total_claim_count
+FROM prescriber
+LEFT JOIN prescription
+USING (npi)
+GROUP BY (prescription.npi)
+ORDER BY total_claim_count DESC;
 
--- Provider 1356305197: 379 claims
--- NOT CORRECT
+-- Provider 1881634483: 99,707 claims
 
 -- 1b. Repeat the above, but this time report the nppes_provider_first_name, nppes_provider_last_org_name, specialty_description, and the total number of claims.
 
@@ -16,18 +16,18 @@ SELECT
 	nppes_provider_first_name,
 	nppes_provider_last_org_name,
 	specialty_description,
-	(COUNT(total_claim_count)) AS number_of_claims
+	(SUM(total_claim_count)) AS total_claim_count
 FROM prescriber
 	LEFT JOIN prescription
-	ON prescriber.npi = prescription.npi
+	USING (npi)
+WHERE total_claim_count IS NOT NULL
 GROUP BY prescription.npi,
 	nppes_provider_first_name,
 	nppes_provider_last_org_name,
 	specialty_description
-ORDER BY number_of_claims DESC;
+ORDER BY total_claim_count DESC;
 
--- Michael Cox in Internal Medicine: 379 claims
--- NOT CORRECT
+-- Bruce Pendley in Family Practice: 99,707 claims
 
 -- 2a. Which specialty had the most total number of claims (totaled over all drugs)?
 
