@@ -33,30 +33,30 @@ ORDER BY total_claim_count DESC;
 
 SELECT
 	specialty_description,
-	(COUNT(total_claim_count)) AS number_of_claims
+	(SUM(total_claim_count)) AS total_claim_count
 FROM prescriber
 	LEFT JOIN prescription
 	USING (npi)
 GROUP BY specialty_description
-ORDER BY number_of_claims DESC;
+ORDER BY total_claim_count DESC;
 
--- Nurse Practitioner: 164,609 claims
+-- Family Practice: 975,2347 claims
 
 -- 2b. Which specialty had the most total number of claims for opioids?
 
 SELECT
 	specialty_description,
-	(COUNT(total_claim_count)) AS number_of_claims
+	(SUM(total_claim_count)) AS total_claim_count
 FROM drug
 	LEFT JOIN prescription
-	ON drug.drug_name = prescription.drug_name  
+	USING (drug_name) 
 	LEFT JOIN prescriber
 	USING (npi)
 WHERE opioid_drug_flag = 'Y'
 GROUP BY specialty_description
-ORDER BY number_of_claims DESC;
+ORDER BY total_claim_count DESC;
 
--- Nurse Practitioner with 9,551 claims with opioid drug flags
+-- Nurse Practitioner with 900,845 claims with opioid drug flags
 
 -- 2c. Challenge Question: Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
 
