@@ -145,7 +145,6 @@ ORDER BY population DESC;
 
 -- 5c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
 
---DRAFT
 SELECT population, fips_county.county,fips_county.state
 FROM population
 FULL JOIN fips_county
@@ -180,7 +179,18 @@ WHERE total_claim_count>=3000;
 
 -- 6c. Add another column to you answer from the previous part which gives the prescriber first and last name associated with each row.
 
-
+SELECT prescription.drug_name, total_claim_count, nppes_provider_last_org_name, nppes_provider_first_name,
+CASE
+	WHEN opioid_drug_flag = 'Y'
+	THEN 'Y'
+	ELSE 'N'
+END AS opioid
+FROM prescription
+LEFT JOIN drug
+USING (drug_name)
+LEFT JOIN prescriber
+USING (npi)
+WHERE total_claim_count>=3000;
 
 -- 7. The goal of this exercise is to generate a full list of all pain management specialists in Nashville and the number of claims they had for each opioid. Hint: The results from all 3 parts will have 637 rows.
 
