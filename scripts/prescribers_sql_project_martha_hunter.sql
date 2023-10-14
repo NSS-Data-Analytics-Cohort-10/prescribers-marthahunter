@@ -6,7 +6,8 @@ FROM prescriber
 LEFT JOIN prescription
 USING (npi)
 GROUP BY (prescription.npi)
-ORDER BY total_claim_count DESC;
+ORDER BY total_claim_count DESC
+LIMIT 5;
 
 -- Provider 1881634483: 99,707 claims
 
@@ -25,7 +26,8 @@ GROUP BY prescription.npi,
 	nppes_provider_first_name,
 	nppes_provider_last_org_name,
 	specialty_description
-ORDER BY total_claim_count DESC;
+ORDER BY total_claim_count DESC
+LIMIT 5;
 
 -- Bruce Pendley in Family Practice: 99,707 claims
 
@@ -66,13 +68,14 @@ ORDER BY total_claim_count DESC;
 
 SELECT
 	generic_name,
-	SUM(total_drug_cost) AS total_drug_cost
+	CAST(SUM(total_drug_cost) AS MONEY) AS total_drug_cost
 FROM prescription
 	LEFT JOIN drug
 	USING (drug_name)
 WHERE total_drug_cost IS NOT NULL
 GROUP BY generic_name
-ORDER BY total_drug_cost DESC;
+ORDER BY total_drug_cost DESC
+LIMIT 50;
 
 -- INSULIN GLARGINE,HUM.REC.ANLOG: $104,264,066.35
 
@@ -80,7 +83,7 @@ ORDER BY total_drug_cost DESC;
 
 SELECT
 	generic_name,
-	ROUND(SUM((total_drug_cost)/30),2) AS cost_per_day
+	CAST((SUM(total_drug_cost)/SUM(total_day_supply)) AS MONEY) AS cost_per_day
 FROM prescription
 	LEFT JOIN drug
 	USING (drug_name)
@@ -88,7 +91,7 @@ WHERE total_drug_cost IS NOT NULL
 GROUP BY generic_name
 ORDER BY cost_per_day DESC;
 
--- INSULIN GLARGINE,HUM.REC.ANLOG, $3,475,468.88
+-- C1 ESTERASE INHIBITOR, $3,495.22
 
 -- 4a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
