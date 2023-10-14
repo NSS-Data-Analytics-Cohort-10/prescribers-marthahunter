@@ -146,12 +146,20 @@ ORDER BY population DESC;
 -- 5c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
 
 --DRAFT
-SELECT population.fipscounty, population
+SELECT population, fips_county.county,fips_county.state
 FROM population
-LEFT JOIN cbsa
+LEFT JOIN fips_county
 USING (fipscounty)
-WHERE population.fipscounty NOT IN cbsa.fipscounty;
+WHERE population.fipscounty NOT IN 
+	(SELECT
+	 fipscounty
+	 FROM cbsa) 
+ORDER BY population DESC
+LIMIT 1;
 
+-- Sevier County: 95523
+
+SELECT 
 
 -- 6a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
 
