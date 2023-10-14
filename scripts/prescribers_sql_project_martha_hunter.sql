@@ -117,10 +117,32 @@ GROUP BY drug.drug_name, opioid_drug_flag, antibiotic_drug_flag;
 
 -- 5a. How many CBSAs are in Tennessee? Warning: The cbsa table contains information for all states, not just Tennessee.
 
+SELECT COUNT (cbsa) AS cbsa_tn
+FROM cbsa
+WHERE cbsaname LIKE '%TN%'
+
+-- 56
+
 -- 5b. Which cbsa has the largest combined population? Which has the smallest? Report the CBSA name and total population.
+
+SELECT cbsa, SUM(population) AS population
+FROM cbsa
+LEFT JOIN population
+USING (fipscounty)
+WHERE population IS NOT NULL
+GROUP BY cbsa
+ORDER BY population DESC;
+
+-- 34980 with a population of 1,830,410
 
 -- 5c. What is the largest (in terms of population) county which is not included in a CBSA? Report the county name and population.
 
+--DRAFT
+SELECT population.fipscounty, population
+FROM population
+LEFT JOIN cbsa
+USING (fipscounty)
+WHERE population.fipscounty NOT IN cbsa.fipscounty;
 
 
 -- 6a. Find all rows in the prescription table where total_claims is at least 3000. Report the drug_name and the total_claim_count.
