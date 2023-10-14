@@ -74,26 +74,39 @@ WHERE total_drug_cost IS NOT NULL
 GROUP BY generic_name
 ORDER BY total_drug_cost DESC;
 
--- INSULIN GLARGINE,HUM.REC.ANLOG: 104264066.35
+-- INSULIN GLARGINE,HUM.REC.ANLOG: $104,264,066.35
 
 -- 3b. Which drug (generic_name) has the hightest total cost per day? Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.
 
---maybe use this and do some math with total_day_supply?
 SELECT
 	generic_name,
-	SUM(total_drug_cost) AS total_drug_cost
+	ROUND(SUM((total_drug_cost)/30),2) AS cost_per_day
 FROM prescription
 	LEFT JOIN drug
 	USING (drug_name)
 WHERE total_drug_cost IS NOT NULL
 GROUP BY generic_name
-ORDER BY total_drug_cost DESC;
+ORDER BY cost_per_day DESC;
+
+-- INSULIN GLARGINE,HUM.REC.ANLOG, $3,475,468.88
 
 -- 4a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
+SELECT 
+	drug_name, 
+	CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
+	WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+	ELSE 'neither' END AS drug_type
+FROM drug;
+
 -- 4b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
 
-
+SELECT 
+	drug_name, 
+	CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
+	WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+	ELSE 'neither' END AS drug_type
+FROM drug
 
 -- 5a. How many CBSAs are in Tennessee? Warning: The cbsa table contains information for all states, not just Tennessee.
 
