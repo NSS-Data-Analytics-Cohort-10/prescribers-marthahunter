@@ -97,43 +97,48 @@ ORDER BY cost_per_day DESC;
 
 SELECT 
 	drug_name, 
-	CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
-	WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
-	ELSE 'neither' END AS drug_type
+	CASE 
+		WHEN opioid_drug_flag = 'Y' THEN 'opioid'
+		WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
+		ELSE 'neither' 
+	END AS drug_type
 FROM drug;
 
 -- 4b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
 
-SELECT 
-	drug.drug_name, 
-	CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
-	WHEN antibiotic_drug_flag = 'Y' THEN 'antibiotic'
-	ELSE 'neither' END AS drug_type,
-	CASE WHEN opioid_drug_flag = 'Y' THEN SUM(total_drug_cost)
-	 ELSE '0' END AS opioid_cost,
-	CASE WHEN antibiotic_drug_flag = 'Y' THEN SUM(total_drug_cost)
-	 ELSE '0' END AS antibiotic_cost
-FROM drug
-LEFT JOIN prescription
-on prescription.drug_name = drug.drug_name
-GROUP BY drug.drug_name, opioid_drug_flag, antibiotic_drug_flag;
+SELECT
+	CASE
+		WHEN drug.opioid_drug_flag = 'Y'
+		THEN 'opioid'
+		WHEN drug.antibiotic_drug_flag = 'Y'
+		THEN 'antibiotic'
+		ELSE 'neither'
+	END AS drug_type,
+	CAST(SUM(prescription.total_drug_cost) AS MONEY) AS total_spent
+	FROM drug
+		LEFT JOIN prescription
+		USING (drug_name)
+	GROUP BY drug_type
+	ORDER BY total_spent DESC;
+
+-- Opioids had a higher total drug cost ($105,080,626.37)
 
 -- 5a. How many CBSAs are in Tennessee? Warning: The cbsa table contains information for all states, not just Tennessee.
 
 SELECT COUNT (cbsa) AS cbsa_tn
 FROM cbsa
-WHERE cbsaname LIKE '%TN%'
+WHERE cbsaname iLIKE '%, TN'
 
--- 56
+-- 33
 
 -- 5b. Which cbsa has the largest combined population? Which has the smallest? Report the CBSA name and total population.
 
-SELECT cbsa, SUM(population) AS population
+SELECT cbsaname, SUM(population) AS population
 FROM cbsa
 LEFT JOIN population
 USING (fipscounty)
 WHERE population IS NOT NULL
-GROUP BY cbsa
+GROUP BY cbsaname
 ORDER BY population DESC;
 
 -- 34980 with a population of 1,830,410
